@@ -1,0 +1,83 @@
+---
+title: "An investigation into the variables that impact mental health"
+author: "Kylen Brown (3540337), Akira Govender (3540386) & Shaundre Hofstander (3540248)"
+date: "28 June 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# 3. Suicide risk 
+
+# 3.1. The effect of depressive symptoms intensity on suicide risk 
+
+## Using a Wilcox test for the non-normal data instead of a t-test
+
+```{r}
+wilcox.test(CESD ~ Suicide_risk, data = health)
+```
+
+# 3.2. The effect of social support on suicide risk 
+
+## Using a Wilcox test for the non-normal data instead of a t-test
+
+```{r}
+wilcox.test(Social_support ~ Suicide_risk, data = health)
+```
+
+# 4. Overall analysis
+
+## Creating a correlation plot
+
+### Loading data 
+
+```{r}
+health_2 <- read.csv2("health_edit.csv")
+```
+
+```{r}
+summary(health_2)
+```
+
+### Getting N and P values
+
+```{r}
+h2 <- rcorr(as.matrix(health_2, use = "complete obs"))
+h2
+```
+
+```{r}
+dat1 <- health_2[sapply(health_2,function(x) length(unique(x)))>1]
+cor(dat1, use = "complete.obs")
+```
+
+### Creating a function for the cor matrix
+
+```{r}
+flattenCorrMatrix <- function(cormat, pmat) 
+  {ut <- upper.tri(cormat)
+  data.frame(row = rownames(cormat)[row(cormat)[ut]],
+             column = rownames(cormat)[col(cormat)[ut]],
+             cor  =(cormat)[ut],
+             p = pmat[ut])}
+```
+
+### Correlation matrix
+
+```{r}
+final <- cor(health_2, use = "complete.obs")
+final
+```
+
+### Creating the visualisation
+
+```{r}
+corrplot(final, type = "upper", order = "hclust", 
+         tl.col = "black", tl.srt = 45)
+```
+
+
+
+
