@@ -64,7 +64,7 @@ flattenCorrMatrix <- function(cormat, pmat)
              p = pmat[ut])}
 ```
 
-### Correlation matrix
+### Creating correlation matrix
 
 ```{r}
 final <- cor(health_2, use = "complete.obs")
