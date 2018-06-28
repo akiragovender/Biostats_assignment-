@@ -148,3 +148,147 @@ summary(CESD2.aov)
 cor.test(health$CESD, health$Age, method = "pearson",
          conf.level = 0.95)
 ```
+
+# 2. Mental component score
+
+## 2.1 Hypothesis 3: The effect of different substances on mental component score 
+
+HO: Substance has no effect on Mental component score 
+H1: Substance has an effect on Mental component score
+
+## Creating a graph representing the effect of each substance on mental component score
+
+### Group and mutate
+
+```{r}
+mental_data <- health %>%
+  mutate(Mental_score = as.numeric(Mental_score)) %>% 
+  group_by(Substance) %>%
+  summarise(mn_mental = mean(Mental_score, na.rm = TRUE),
+            sd_mental = sd(Mental_score, na.rm = TRUE))
+```
+This created an average for the 3 substances that were abused
+
+### Creating a table
+
+```{r}
+kable(mental_data, caption = "Table 2. The effect of each substance on mental score")
+```
+
+### Creating the graph
+
+```{r}
+mental_score_graph <- ggplot(mental_data, aes(x = Substance, y = mn_mental, 
+                                              fill = Substance)) +
+  geom_col(aes(fill = Substance), position = "dodge",width = 0.5) +
+  labs(x = "Substance",y = "Average mental component score",
+       title = "The effect of each substance on the mental component score", 
+       caption = "Figure 3: The average mental compnent score based on the three substances that were abused") +
+  theme(plot.title = element_text(hjust = 0.5), 
+        plot.caption = element_text(hjust = 0.5)) +
+  geom_errorbar(aes(ymin = mn_mental - sd_mental,
+                    ymax = mn_mental + sd_mental),
+                position = "dodge",width = 0.5)
+mental_score_graph
+```
+
+## 2.2. Hypothesis 4: The influence of gender on mental component score 
+
+HO: Gender has no effect on Mental component score 
+H1: Gender has an effect on Mental component score
+
+## Creating a graph representing mental component score for both males and females
+
+### Group and mutate
+
+```{r}
+gender_data <- health %>%
+  mutate(Mental_score = as.numeric(Mental_score)) %>% 
+  group_by(Sex) %>%
+  summarise(mn_mental = mean(Mental_score, na.rm = TRUE),
+            sd_mental = sd(Mental_score, na.rm = TRUE))
+```
+This compared the average mental score in terms of gender
+
+### Creating the graph
+```{r}
+gender_graph <- ggplot(gender_data, aes(x = Sex, y = mn_mental, 
+                                              fill = Sex)) +
+  geom_col(aes(fill = Sex), position = "dodge",width = 0.5) +
+  labs(x = "Gender",y = "Average mental component score",
+       title = "Average mental component score of males and females", 
+       caption = "Figure 4: The average mental component score based upon gender" ) +
+  theme(plot.title = element_text(hjust = 0.5), 
+        plot.caption = element_text(hjust = 0.5)) +
+  geom_errorbar(aes(ymin = mn_mental - sd_mental,
+                    ymax = mn_mental + sd_mental),
+                position = "dodge",width = 0.5)
+gender_graph
+```
+
+##  Measures of Variance
+
+### A summary of the statistical properties 
+
+```{r}
+ms_summary2 <- health %>% 
+  group_by(Sex) %>% 
+  summarise(mean_ms2 = mean(Mental_score),
+            median_ms2 = median(Mental_score),
+            var_ms2 = var(Mental_score),
+            sd_ms2 = sd(Mental_score),
+            min_ms2 = min(Mental_score),
+            quart1_ms2 = quantile(Mental_score, 0.25),
+            quart2_ms2 = quantile(Mental_score, 0.5),
+            quart3_ms2 = quantile(Mental_score, 0.75))
+ms_summary2
+```
+
+## Conducting an ANOVA test 
+
+```{r}
+mentals.aov <- aov(Mental_score ~ Sex, data = health)
+summary(mentals.aov)
+```
+
+# 2.3. The effect of social support on mental component score 
+
+## Running a correlation test between Mental health score and social support
+
+```{r}
+cor.test(health$Mental_score, health$Social_support, method = "pearson",
+         conf.level = 0.95)
+```
+# 2.4 The effect of age on mental component score
+
+## A correlation analysis 
+
+### Group and mutate
+
+```{r}
+age_data <- health %>%
+  mutate(Mental_score = as.numeric(Mental_score)) %>% 
+  group_by(Age) %>%
+  summarise(mn_mental = mean(Mental_score, na.rm = TRUE),
+            sd_mental = sd(Mental_score, na.rm = TRUE))
+```
+This compared the average mental score in terms of age
+
+### Creating the graph
+
+```{r}
+correlation <- ggplot(data = age_data, aes(x = Age , y = mn_mental)) +
+  geom_point(pch = 16, cex = 1.5, colour = "Navy") +
+  geom_smooth(method = lm, colour = "Red", se = FALSE) +
+  labs(x = "Age", y = "Mental component score", 
+       caption = "Figure 5: Correlation between age and the mental component score") +
+  ggtitle("Average mental component score based on age") +
+  theme(plot.title = element_text(hjust = 0.5), 
+        plot.caption = element_text(hjust = 0.5))
+correlation
+```
+
+
+
+
+
