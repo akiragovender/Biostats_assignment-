@@ -1,0 +1,150 @@
+---
+title: "An investigation into the variables that impact mental health"
+author: "Kylen Brown (3540337), Akira Govender (3540386) & Shaundre Hofstander (3540248)"
+date: "28 June 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Setup 
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(dplyr)
+library(lubridate)
+library(ggpubr)
+library(readr)
+library(rmarkdown)
+library(knitr)
+library(e1071)
+library(ggplot2)
+library(magrittr)
+library(Hmisc)
+library(corrplot)
+library(RColorBrewer)
+library(ggthemes)
+library(DT)
+library(xtable)
+library(devtools)
+```
+```{r setup, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Loading the data and assigning to an object
+
+```{r}
+health <- read.csv2("health.csv")
+```
+
+# 1. Depressive symptoms (CESD)
+
+## 1.1 Hypothesis 1: The effect of different substances on depressive symptoms 
+
+HO: Substance has no effect on CESD 
+H1: Substance has an effect on CESD
+
+## Creating a graph representing the effect of each substance on the intenisty of depressive symptoms experienced
+
+### Group and mutate
+
+```{r}
+depression_data <- health %>%
+  group_by(Substance) %>%
+  summarise(mn_cesd = mean(CESD, na.rm = TRUE),
+            sd_cesd = sd(CESD, na.rm = TRUE))
+```
+This created an average for the 3 substances that were abused
+
+### Creating a table
+
+```{r}
+kable(depression_data, caption = "Table 1. The effect of each substance on depressive symptoms")
+```
+
+### Creating the graph
+```{r}
+sub_depression_graph <- ggplot(depression_data, aes(x = Substance, y = mn_cesd, 
+                                              fill = Substance)) +
+  geom_col(aes(fill = Substance), position = "dodge",width = 0.5) +
+  labs(x = "Substance",y = "Average measure of depression",
+       title = "The effect of each substance on the intensity of depressive symptoms", 
+       caption = "Figure 1: The average measure of depressive symptoms based on the three substances that were abused") +
+  theme(plot.title = element_text(hjust = 0.5), 
+        plot.caption = element_text(hjust = 0.5)) +
+  geom_errorbar(aes(ymin = mn_cesd - sd_cesd,
+                    ymax = mn_cesd + sd_cesd),
+                position = "dodge",width = 0.5)
+sub_depression_graph
+```
+
+## Comaparing the difference in mean and median against skewness and calculating the kurtosis of the tails of a distribution (depressive symptoms based on substances abused) 
+
+```{r}
+health %>%
+  group_by(Substance) %>% 
+  summarise(mean_cesd = mean(CESD),
+            median_cesd = median(CESD),
+            skew_cesd = skewness(CESD),
+            kurt_cesd = kurtosis(CESD))
+```
+
+## Conducting an ANOVA test 
+
+```{r}
+CESD.aov <- aov(CESD ~ Substance, data = health)
+summary(CESD.aov)
+```
+
+## Creating the graphical representation
+
+```{r}
+ggplot(data = CESD.aov, aes(x = Substance, y = CESD)) +
+  geom_boxplot(aes(fill = Substance), notch = TRUE) +
+  labs(title = "The effect of each substance on the intensity of depressive symptoms", 
+       caption = "Figure 2: An ANOVA analysis of the depressive symptoms based on the three substances that were abused") +
+  theme(plot.title = element_text(hjust = 0.5), 
+        plot.caption = element_text(hjust = 0.5))
+```
+
+## Running a tukey test
+ 
+```{r}
+health_Tukey <- as.data.frame(TukeyHSD(aov(CESD ~ Substance, data = health))$Substance)
+health_Tukey$pairs <- as.factor(row.names(health_Tukey))
+summary(health_Tukey)
+```
+
+## 1.2. Hypothesis 2: The effect of gender on depressive symptoms 
+
+HO: Gender has no effect on CESD 
+H1: Gender has an effect on CESD
+
+## Comaparing the difference in mean and median against skewness and calculating the kurtosis of the tails of a distribution (depressive symptoms based on sex) 
+
+```{r}
+health %>%
+  group_by(Sex) %>% 
+  summarise(mean_cesd2 = mean(CESD),
+            median_cesd2 = median(CESD),
+            skew_cesd2 = skewness(CESD),
+            kurt_cesd2 = kurtosis(CESD))
+```
+
+## Conducting an ANOVA test 
+
+```{r}
+CESD2.aov <- aov(CESD ~ Sex, data = health)
+summary(CESD2.aov)
+```
+
+# 1.3. The influence of age on the intensity of depressive symptoms   
+
+## Running the correlation test between depressive symptoms and age 
+
+```{r}
+cor.test(health$CESD, health$Age, method = "pearson",
+         conf.level = 0.95)
+```
