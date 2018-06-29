@@ -1,15 +1,13 @@
 ---
 title: "An investigation into the variables that impact mental health"
-author: "Kylen Brown (3540337), Akira Govender (3540386) & Shanudre Hofstander (3540248)"
+author: "Kylen Brown (3540337), Akira Govender (3540386) & Shaundre Hofstander (3540248)"
 date: "29 June 2018"
-output: pdf_document
+output: 
+  pdf_document:
+    latex_engine: xelatex
+mainfont: Arial
+fontsize: 11pt 
 ---
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-# An investigation into the variables that impact mental health
 
 # Abstract
 
@@ -88,25 +86,24 @@ This created an average for the 3 substances that were abused
 ### Creating a table
 
 ```{r}
-kable(depression_data, caption = "Table 1. The effect of each substance on depressive symptoms")
+Table_1 <- kable(depression_data, caption = "The effect of each substance on depressive symptoms")
 ```
 
 ### Creating the graph
 ```{r}
-sub_depression_graph <- ggplot(depression_data, aes(x = Substance, y = mn_cesd, 
+Figure_1 <- ggplot(depression_data, aes(x = Substance, y = mn_cesd, 
                                               fill = Substance)) +
   geom_col(aes(fill = Substance), position = "dodge",width = 0.5) +
   labs(x = "Substance",y = "Average measure of depression",
-       title = "The effect of each substance on the intensity of depressive symptoms", 
-       caption = "Figure 1: The average measure of depressive symptoms based on the three substances that were abused") +
-  theme(plot.title = element_text(hjust = 0.5), 
-        plot.caption = element_text(hjust = 0.5)) +
+       caption = "Figure 1: The average measure of depressive symptoms based 
+       on the three substances that were abused") +
   geom_errorbar(aes(ymin = mn_cesd - sd_cesd,
                     ymax = mn_cesd + sd_cesd),
-                position = "dodge",width = 0.5)
-sub_depression_graph
-
-ggsave(sub_depression_graph, filename = "Figure_1.png")
+                position = "dodge",width = 0.5) + 
+  theme_pubclean() +
+  theme(plot.title = element_text(hjust = 0.5), 
+        plot.caption = element_text(hjust = 0.5)) +
+  theme(legend.position = "right")
 ```
 
 The higher the intensity of depressive symptoms the higher the effect of the substance. In Figure 1, cocaine appears to be the substance that is least likely to cause depression. Alcohol and heroin are most likely to cause depression. However, the error bars show that the difference between heroin and alcohol is not statistically significant. Indicating that the abuse of these substances does not influence the intensity of depressive symptoms. The kurtosis of all three substances is less than zero, meaning that the distributions are of a platykurtic distribution. 
@@ -132,15 +129,14 @@ summary(CESD.aov)
 ### Creating the graphical representation
 
 ```{r}
-F2 <- ggplot(data = CESD.aov, aes(x = Substance, y = CESD)) +
+Figure_2 <- ggplot(data = CESD.aov, aes(x = Substance, y = CESD)) +
   geom_boxplot(aes(fill = Substance), notch = TRUE) +
-  labs(title = "The effect of each substance on the intensity of depressive symptoms", 
-       caption = "Figure 2: An ANOVA analysis of the depressive symptoms based on the three substances that were abused") +
+  labs(caption = "Figure 2: An ANOVA analysis of the depressive symptoms based on 
+       the three substances that were abused") +
+  theme_pubclean() +
   theme(plot.title = element_text(hjust = 0.5), 
-        plot.caption = element_text(hjust = 0.5))
-F2
-
-ggsave(F2, filename = "Figure_2.png")
+        plot.caption = element_text(hjust = 0.5)) +
+  theme(legend.position = "right")
 ```
 
 Figure 2 shows that the notches of the substances alcohol and heroin overlap, indicating that their medians do not differ, with 95% confidence intervals. The notch for cocaine overlaps with neither alcohol nor heroin, indicating that the medians differ with 95% confidence intervals.
@@ -214,26 +210,25 @@ This created an average for the 3 substances that were abused
 ### Creating a table
 
 ```{r}
-kable(mental_data, caption = "Table 2. The effect of each substance on mental score")
+Table_2 <- kable(mental_data, caption = "The effect of each substance on mental score")
 ```
 
 ### Creating the graph
 
 ```{r}
-mental_score_graph <- ggplot(mental_data, aes(x = Substance, y = mn_mental, 
+Figure_3 <- ggplot(mental_data, aes(x = Substance, y = mn_mental, 
                                               fill = Substance)) +
   geom_col(aes(fill = Substance), position = "dodge",width = 0.5) +
   labs(x = "Substance",y = "Average mental component score",
-       title = "The effect of each substance on the mental component score", 
-       caption = "Figure 3: The average mental compnent score based on the three substances that were abused") +
-  theme(plot.title = element_text(hjust = 0.5), 
-        plot.caption = element_text(hjust = 0.5)) +
+       caption = "Figure 3: The average mental compnent score based on 
+       the three substances that were abused") +
   geom_errorbar(aes(ymin = mn_mental - sd_mental,
                     ymax = mn_mental + sd_mental),
-                position = "dodge",width = 0.5)
-mental_score_graph
-
-ggsave(mental_score_graph, filename = "Figure_3.png")
+                position = "dodge",width = 0.5) +
+  theme_pubclean() +
+  theme(plot.title = element_text(hjust = 0.5), 
+        plot.caption = element_text(hjust = 0.5)) +
+  theme(legend.position = "right")
 ```
 
 A high mental component score indicated a healthy mental state. In Figure 3, heroin has the greatest negative effect on the mental component score, resulting in a poor mental state. This is followed by the substances alcohol and cocaine, respectively. The error bars show that the difference between heroin, cocaine and alcohol is not statistically significant.
@@ -258,20 +253,18 @@ This compared the average mental score in terms of gender
 
 ### Creating the graph
 ```{r}
-gender_graph <- ggplot(gender_data, aes(x = Sex, y = mn_mental, 
+Figure_4 <- ggplot(gender_data, aes(x = Sex, y = mn_mental, 
                                               fill = Sex)) +
   geom_col(aes(fill = Sex), position = "dodge",width = 0.5) +
   labs(x = "Gender",y = "Average mental component score",
-       title = "Average mental component score of males and females", 
        caption = "Figure 4: The average mental component score based upon gender" ) +
-  theme(plot.title = element_text(hjust = 0.5), 
-        plot.caption = element_text(hjust = 0.5)) +
   geom_errorbar(aes(ymin = mn_mental - sd_mental,
                     ymax = mn_mental + sd_mental),
-                position = "dodge",width = 0.5)
-gender_graph
-
-ggsave(gender_graph, filename = "Figure_4.png")
+                position = "dodge",width = 0.5) + 
+  theme_pubclean() +
+  theme(plot.title = element_text(hjust = 0.5), 
+        plot.caption = element_text(hjust = 0.5)) +
+  theme(legend.position = "right")
 ```
 
 Figure 4 shows that males have a higher mental component score than females, however the error bars show that there is no significant difference. 
@@ -331,17 +324,16 @@ This compared the average mental score in terms of age
 ### Creating the graph
 
 ```{r}
-correlation <- ggplot(data = age_data, aes(x = Age , y = mn_mental)) +
+Figure_5 <- ggplot(data = age_data, aes(x = Age , y = mn_mental)) +
   geom_point(pch = 16, cex = 1.5, colour = "Navy") +
   geom_smooth(method = lm, colour = "Red", se = FALSE) +
   labs(x = "Age", y = "Mental component score", 
        caption = "Figure 5: Correlation between age and the mental component score") +
-  ggtitle("Average mental component score based on age") +
+  theme_pubclean() +
   theme(plot.title = element_text(hjust = 0.5), 
-        plot.caption = element_text(hjust = 0.5))
-correlation
-
-ggsave(correlation, filename = "Figure_5.png")
+        plot.caption = element_text(hjust = 0.5)) +
+  theme(legend.position = "right")
+ 
 ```
 
 Figure 5 shows that there is no significant correlation between age and mental component score.
@@ -414,7 +406,7 @@ final
 
 ### Creating the visualisation
 
-```{r}
+```{r include=FALSE}
 corrplot(final, type = "upper", order = "hclust", 
          tl.col = "black", tl.srt = 45)
 ```
@@ -436,6 +428,10 @@ This study’s flaws include a relatively small sample size, it used information
 
 The major findings of this study are that gender affects CESD, while substance abuse does not affect CESD. Substance abuse and age does not affect mental component score. However, gender and social support does influence mental component score. The suicide risk on the other hand, is affected by CESD but not affected by social support. Although substance abuse does not affect the overall mental health of the user/patient, social support helps improve mental state and in turn reduce depressive symptoms (CESD). 
 
+# Acknowledgements 
+
+All collaborators have contributed equally to the report. The data repository can be found at https://github.com/akiragovender/Biostats_assignment- 
+
 # References
 
 Cornelius JR, Salloum IM, Mezzich J, Cornelius MD. 1995. Disproportionate suicidality in patients with comorbid major depression and alcoholism. *The American journal of psychiatry* 152: 358.
@@ -455,3 +451,42 @@ Sahu KK, Sahu S. 2012. Substance abuse causes and consequences. *Bangabasi Acade
 Strupp HH, Hadley SW. 1977. A tripartite model of mental health and therapeutic outcomes: With special reference to negative effects in psychotherapy. *American Psychologist* 32: 187.
 
 Wines JD, Saitz R, Horton NJ, Lloyd-Travaglini C, Samet JH. 2004. Suicidal behavior, drug use and depressive symptoms after detoxification: a 2-year prospective study. *Drug & Alcohol Dependence* 76: S21–S29.
+
+# Appendix I - Figures 
+
+```{r}
+Figure_1
+```
+
+```{r}
+Figure_2
+```
+
+```{r}
+Figure_3
+```
+
+```{r}
+Figure_4
+```
+
+```{r}
+Figure_5
+```
+
+```{r}
+corrplot(final, type = "upper", order = "hclust", 
+         tl.col = "black", tl.srt = 45)
+```
+Figure 6: Correlation matrix 
+
+# Appendix II - Tables 
+
+```{r}
+Table_1
+```
+
+```{r}
+Table_2
+```
+
