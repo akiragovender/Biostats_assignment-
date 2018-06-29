@@ -4,7 +4,7 @@ author: "Kylen Brown (3540337), Akira Govender (3540386) & Shaundre Hofstander (
 date: "29 June 2018"
 output: 
   pdf_document:
-    latex_engine: pdflatex
+    latex_engine: pdfLaTeX
 mainfont: Arial
 fontsize: 11pt 
 ---
