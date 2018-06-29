@@ -1,0 +1,444 @@
+---
+title: "An investigation into the variables that impact mental health"
+author: "Kylen Brown (3540337), Akira Govender (3540386) & Shanudre Hofstander (3540248)"
+date: "29 June 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Abstract
+
+Mental health is an important topic of discussion in today’s society with positive mental health being associated with the ability to remain independent of social influences. It is, therefore, important to examine the effects of social influences on mental health in order to better understand the condition of the human mind. This study examines the effects of substance abuse, social support, age and gender on the CESD (Center for Epidemiologic Studies Depression measure at baseline) and MCS (SF-36 Mental Component Score) of a group of adult inpatients recruited from a detoxification unit. A series of statistical analyses were applied and it was found that gender and not substance abuse affects CESD (Center for Epidemiologic Studies Depression measure at baseline). Gender in addition to social support was found to influence Mental Component Score with age having no effect on Mental Component Score. In agreement with other studies, this study has also shown that depressive symptoms further increases the risk of suicidal behaviour with suicide risk being affected by CESD (Center for Epidemiologic Studies Depression measure at baseline) and not by social support. 
+
+Keywords: Baseline evaluation, Behaviour, Depression, Human behaviour, Mental health, Substance abuse
+
+# Introduction 
+
+An increased focus has been placed on mental health in recent times with mental health being defined according to social and individual criteria (Strupp and Hadley 1978). Society defines mental health in terms of behavioural stability whereas mental health on an individual level is associated with personal well-being (Strupp and Hadley 1978). In today’s society, it is important to examine the effects of social influences on mental health as a positive mental health is associated with the ability to be independent of social influences (Jahoda 1958). This study, therefore, aims to examine the effects of social influences including substance abuse and social support on mental health in relation to gender and age. Mental health in this study will be looked at in terms of CESD (Center for Epidemiologic Studies Depression measure at baseline) and MCS (SF-36 Mental Component Score). 
+
+Substance abuse has negative effects on mental health as a significant percentage of suicides are related to alcohol and drug use (Wines et al. 2004). Many studies have shown that individuals with substance-related disorders exhibit increased suicidal behaviour and that depressive symptoms further increases the risk of suicidal behaviour (Darke et al. 2004; Kosten and Rounsaville 1988; Preuss et al. 2003; Wines et al. 2004). A study conducted by Cornelius et al. in 1995 showed that alcoholics who suffered from major depression were 59 % more suicidal than individuals that suffered from major depression only. In the same way that an increase in depressive symptoms is associated with suicidal behaviour, differences in suicidal behaviour also exist between substance abuse categories (Wines et al. 2004). Alcohol and CNS depressants including benzodiazepines and barbiturates increase the risk for suicidal behaviour (Wines et al. 2004). The ability of alcohol to trigger suicidal behaviour has been linked to alcohol’s ability to increase depression, facilitate aggression, decrease attention and negatively affect behaviour (Hufford 2001). 
+
+Mental component score is an instrument of the Health-related quality of life (HRQOL) which refers to the functioning and well-being of the physical, social and mental dimensions of life (Farivar 2007). SF-36 is comprised of 8 multi-item scales averaged into two summary measures; these include the Physical (PCS) and Mental (MCS) Component Summary scores with lower Mental (MCS) Component Summary scores being indicative of worse status (Farivar 2007). In order to examine the effects of social influences on mental health, this study tests four hypotheses: (1) The effect of different substances on depressive symptoms; (2) The effect of gender on depressive symptoms; (3) The effect of different substances on Mental Component Score and (4) The influence of gender on Mental Component Score.
+
+# Methods and Materials 
+
+The data for this assignment was collected online at https://vincentarelbundock.github.io/Rdatasets/doc/mosaicData/HELPmiss.html from a study on health evaluation and linkage to primary care. In this study adult inpatients were recruited from a detoxification unit where patients with no primary care were randomized to receive multidisciplinary assessment, brief motivational intervention or usual care in order to link them to primary medical care. In this study, the eligible inpatients were adults that spoke English or Spanish, reported alcohol, heroin or cocaine as their first or second drug of choice in addition to residing in proximity to the primary care clinic to which they would be referred or were homeless. The inpatients were interviewed at the beginning of their detoxification with follow-up interviews being conducted every 6 months for a period of 2 years with a variety of continuous, count, discrete, and survival time predictors and outcomes being collected at each of these occasions. Data on age, CESD (Center for Epidemiologic Studies Depression measure at baseline), sex, suicide risk, MCS (SF-36 Mental Component Score), social support and primary substance of abuse (alcohol, cocaine or heroin) was collected for the 453 individuals that were involved in this study. In our analysis, the Mental Component Score was rounded to the nearest whole number. 
+
+## Statistical analyses
+
+A two-way ANOVA test was used to compare CESD (Center for Epidemiologic Studies Depression measure at baseline) between the three substances that were abused (alcohol, heroin and cocaine) and a tukey test was performed in order to identify where the differences lie. A two-way ANOVA test was used to compare the CESD (Center for Epidemiologic Studies Depression measure at baseline) between males and females with a correlation test being performed in order to measure the correlation between CESD (Center for Epidemiologic Studies Depression measure at baseline) and age. A two-way ANOVA test was used to compare MCS (SF-36 Mental Component Score) between males and females with a correlation test being performed in order to measure the correlation between MCS (SF-36 Mental Component Score) and social support. A correlation analysis was conducted to measure the correlation between MCS (SF-36 Mental Component Score) and age. A Wilcox test for non-normal data was run in order to determine the effect of CESD (Center for Epidemiologic Studies Depression measure at baseline) intensity on suicide risk. A Wilcox test for non-normal data was run in order to determine the effect of social support on suicide risk. A correlation matrix was constructed to correlate CESD (Center for Epidemiologic Studies Depression measure at baseline), age, MCS (SF-36 Mental Component Score) and social support to one another. 
+
+# Results
+
+## Setup 
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(dplyr)
+library(lubridate)
+library(ggpubr)
+library(readr)
+library(rmarkdown)
+library(knitr)
+library(e1071)
+library(ggplot2)
+library(magrittr)
+library(Hmisc)
+library(corrplot)
+library(RColorBrewer)
+library(ggthemes)
+library(DT)
+library(xtable)
+library(devtools)
+```
+```{r setup, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Loading the data and assigning to an object
+
+```{r}
+health <- read.csv2("health.csv")
+```
+
+# 1. Depressive symptoms (CESD)
+
+## 1.1 Hypothesis 1: The effect of different substances on depressive symptoms 
+
+HO: Substance has no effect on CESD 
+H1: Substance has an effect on CESD
+
+## Creating a graph representing the effect of each substance on the intenisty of depressive symptoms experienced
+
+### Group and mutate
+
+```{r}
+depression_data <- health %>%
+  group_by(Substance) %>%
+  summarise(mn_cesd = mean(CESD, na.rm = TRUE),
+            sd_cesd = sd(CESD, na.rm = TRUE))
+```
+This created an average for the 3 substances that were abused
+
+### Creating a table
+
+```{r}
+kable(depression_data, caption = "Table 1. The effect of each substance on depressive symptoms")
+```
+
+### Creating the graph
+```{r}
+sub_depression_graph <- ggplot(depression_data, aes(x = Substance, y = mn_cesd, 
+                                              fill = Substance)) +
+  geom_col(aes(fill = Substance), position = "dodge",width = 0.5) +
+  labs(x = "Substance",y = "Average measure of depression",
+       title = "The effect of each substance on the intensity of depressive symptoms", 
+       caption = "Figure 1: The average measure of depressive symptoms based on the three substances that were abused") +
+  theme(plot.title = element_text(hjust = 0.5), 
+        plot.caption = element_text(hjust = 0.5)) +
+  geom_errorbar(aes(ymin = mn_cesd - sd_cesd,
+                    ymax = mn_cesd + sd_cesd),
+                position = "dodge",width = 0.5)
+sub_depression_graph
+```
+
+The higher the intensity of depressive symptoms the higher the effect of the substance. In Figure 1, cocaine appears to be the substance that is least likely to cause depression. Alcohol and heroin are most likely to cause depression. However, the error bars show that the difference between heroin and alcohol is not statistically significant. Indicating that the abuse of these substances does not influence the intensity of depressive symptoms. The kurtosis of all three substances is less than zero, meaning that the distributions are of a platykurtic distribution. 
+
+## Comaparing the difference in mean and median against skewness and calculating the kurtosis of the tails of a distribution (depressive symptoms based on substances abused) 
+
+```{r}
+health %>%
+  group_by(Substance) %>% 
+  summarise(mean_cesd = mean(CESD),
+            median_cesd = median(CESD),
+            skew_cesd = skewness(CESD),
+            kurt_cesd = kurtosis(CESD))
+```
+
+### Conducting an ANOVA test 
+
+```{r}
+CESD.aov <- aov(CESD ~ Substance, data = health)
+summary(CESD.aov)
+```
+
+### Creating the graphical representation
+
+```{r}
+ggplot(data = CESD.aov, aes(x = Substance, y = CESD)) +
+  geom_boxplot(aes(fill = Substance), notch = TRUE) +
+  labs(title = "The effect of each substance on the intensity of depressive symptoms", 
+       caption = "Figure 2: An ANOVA analysis of the depressive symptoms based on the three substances that were abused") +
+  theme(plot.title = element_text(hjust = 0.5), 
+        plot.caption = element_text(hjust = 0.5))
+```
+
+Figure 2 shows that the notches of the substances alcohol and heroin overlap, indicating that their medians do not differ, with 95% confidence intervals. The notch for cocaine overlaps with neither alcohol nor heroin, indicating that the medians differ with 95% confidence intervals.
+
+### Running a tukey test
+ 
+```{r}
+health_Tukey <- as.data.frame(TukeyHSD(aov(CESD ~ Substance, data = health))$Substance)
+health_Tukey$pairs <- as.factor(row.names(health_Tukey))
+summary(health_Tukey)
+```
+
+Tukey’s test is a “post-hoc”, the Tukey HSD test shows us that pairwise comparisons of all the groups that are being compared. The 95% family-wise confidence level graphical representation derives from the Tukey test. It shows that in the “heroin-alcohol” group, heroin is not detectably different from alcohol (with 95% confidence intervals), whereas cocaine is detectably different from alcohol and heroin.
+
+## 1.2. Hypothesis 2: The effect of gender on depressive symptoms 
+
+HO: Gender has no effect on CESD 
+H1: Gender has an effect on CESD
+
+## Comaparing the difference in mean and median against skewness and calculating the kurtosis of the tails of a distribution (depressive symptoms based on sex) 
+
+```{r}
+health %>%
+  group_by(Sex) %>% 
+  summarise(mean_cesd2 = mean(CESD),
+            median_cesd2 = median(CESD),
+            skew_cesd2 = skewness(CESD),
+            kurt_cesd2 = kurtosis(CESD))
+```
+
+### Conducting an ANOVA test 
+
+```{r}
+CESD2.aov <- aov(CESD ~ Sex, data = health)
+summary(CESD2.aov)
+```
+
+The data further shows that both male and female distributions are of a platykurtic nature, indicating that the kurtosis of the genders is less than zero. The p-value for this hypothesis is 0.00012, indicating that there is a significant difference. 
+
+# 1.3. The influence of age on the intensity of depressive symptoms   
+
+## Running the correlation test between depressive symptoms and age 
+
+```{r}
+cor.test(health$CESD, health$Age, method = "pearson",
+         conf.level = 0.95)
+```
+
+The Pearson’s product-moment correlation shows a positive correlation (r = 0.008) with 95% confidence intervals.
+
+# 2. Mental component score
+
+## 2.1 Hypothesis 3: The effect of different substances on mental component score 
+
+HO: Substance has no effect on Mental component score 
+H1: Substance has an effect on Mental component score
+
+## Creating a graph representing the effect of each substance on mental component score
+
+### Group and mutate
+
+```{r}
+mental_data <- health %>%
+  mutate(Mental_score = as.numeric(Mental_score)) %>% 
+  group_by(Substance) %>%
+  summarise(mn_mental = mean(Mental_score, na.rm = TRUE),
+            sd_mental = sd(Mental_score, na.rm = TRUE))
+```
+This created an average for the 3 substances that were abused
+
+### Creating a table
+
+```{r}
+kable(mental_data, caption = "Table 2. The effect of each substance on mental score")
+```
+
+### Creating the graph
+
+```{r}
+mental_score_graph <- ggplot(mental_data, aes(x = Substance, y = mn_mental, 
+                                              fill = Substance)) +
+  geom_col(aes(fill = Substance), position = "dodge",width = 0.5) +
+  labs(x = "Substance",y = "Average mental component score",
+       title = "The effect of each substance on the mental component score", 
+       caption = "Figure 3: The average mental compnent score based on the three substances that were abused") +
+  theme(plot.title = element_text(hjust = 0.5), 
+        plot.caption = element_text(hjust = 0.5)) +
+  geom_errorbar(aes(ymin = mn_mental - sd_mental,
+                    ymax = mn_mental + sd_mental),
+                position = "dodge",width = 0.5)
+mental_score_graph
+```
+
+A high mental component score indicated a healthy mental state. In Figure 3, heroin has the greatest negative effect on the mental component score, resulting in a poor mental state. This is followed by the substances alcohol and cocaine, respectively. The error bars show that the difference between heroin, cocaine and alcohol is not statistically significant.
+
+## 2.2. Hypothesis 4: The influence of gender on mental component score 
+
+HO: Gender has no effect on Mental component score 
+H1: Gender has an effect on Mental component score
+
+## Creating a graph representing mental component score for both males and females
+
+### Group and mutate
+
+```{r}
+gender_data <- health %>%
+  mutate(Mental_score = as.numeric(Mental_score)) %>% 
+  group_by(Sex) %>%
+  summarise(mn_mental = mean(Mental_score, na.rm = TRUE),
+            sd_mental = sd(Mental_score, na.rm = TRUE))
+```
+This compared the average mental score in terms of gender
+
+### Creating the graph
+```{r}
+gender_graph <- ggplot(gender_data, aes(x = Sex, y = mn_mental, 
+                                              fill = Sex)) +
+  geom_col(aes(fill = Sex), position = "dodge",width = 0.5) +
+  labs(x = "Gender",y = "Average mental component score",
+       title = "Average mental component score of males and females", 
+       caption = "Figure 4: The average mental component score based upon gender" ) +
+  theme(plot.title = element_text(hjust = 0.5), 
+        plot.caption = element_text(hjust = 0.5)) +
+  geom_errorbar(aes(ymin = mn_mental - sd_mental,
+                    ymax = mn_mental + sd_mental),
+                position = "dodge",width = 0.5)
+gender_graph
+```
+
+Figure 4 shows that males have a higher mental component score than females, however the error bars show that there is no significant difference. 
+The p value of 0.0103 indicates that a significant difference exists between the means. 
+
+##  Measures of Variance
+
+### A summary of the statistical properties 
+
+```{r}
+ms_summary2 <- health %>% 
+  group_by(Sex) %>% 
+  summarise(mean_ms2 = mean(Mental_score),
+            median_ms2 = median(Mental_score),
+            var_ms2 = var(Mental_score),
+            sd_ms2 = sd(Mental_score),
+            min_ms2 = min(Mental_score),
+            quart1_ms2 = quantile(Mental_score, 0.25),
+            quart2_ms2 = quantile(Mental_score, 0.5),
+            quart3_ms2 = quantile(Mental_score, 0.75))
+ms_summary2
+```
+
+### Conducting an ANOVA test 
+
+```{r}
+mentals.aov <- aov(Mental_score ~ Sex, data = health)
+summary(mentals.aov)
+```
+
+# 2.3. The effect of social support on mental component score 
+
+### Running a correlation test between Mental health score and social support
+
+```{r}
+cor.test(health$Mental_score, health$Social_support, method = "pearson",
+         conf.level = 0.95)
+```
+
+The correlation coefficient of 0.136 shows a positive correlation between social support and mental component score. Showing that as social support increases, so does the patient’s mental component score. 
+
+# 2.4 The effect of age on mental component score
+
+## A correlation analysis 
+
+### Group and mutate
+
+```{r}
+age_data <- health %>%
+  mutate(Mental_score = as.numeric(Mental_score)) %>% 
+  group_by(Age) %>%
+  summarise(mn_mental = mean(Mental_score, na.rm = TRUE),
+            sd_mental = sd(Mental_score, na.rm = TRUE))
+```
+This compared the average mental score in terms of age
+
+### Creating the graph
+
+```{r}
+correlation <- ggplot(data = age_data, aes(x = Age , y = mn_mental)) +
+  geom_point(pch = 16, cex = 1.5, colour = "Navy") +
+  geom_smooth(method = lm, colour = "Red", se = FALSE) +
+  labs(x = "Age", y = "Mental component score", 
+       caption = "Figure 5: Correlation between age and the mental component score") +
+  ggtitle("Average mental component score based on age") +
+  theme(plot.title = element_text(hjust = 0.5), 
+        plot.caption = element_text(hjust = 0.5))
+correlation
+```
+
+Figure 5 shows that there is no significant correlation between age and mental component score.
+
+# 3. Suicide risk 
+
+# 3.1. The effect of depressive symptoms intensity on suicide risk 
+
+### Using a Wilcox test for the non-normal data instead of a t-test
+
+```{r}
+wilcox.test(CESD ~ Suicide_risk, data = health)
+```
+
+The p-value is below 0.05, indicating that there is a significant difference and that the medians differ. 
+
+# 3.2. The effect of social support on suicide risk 
+
+### Using a Wilcox test for the non-normal data instead of a t-test
+
+```{r}
+wilcox.test(Social_support ~ Suicide_risk, data = health)
+```
+
+The p-value of 0.064 indicates that there is no significant relationship between these variables.
+
+# 4. Overall analysis
+
+## Creating a correlation plot
+
+### Loading data 
+
+```{r}
+health_2 <- read.csv2("health_edit.csv")
+```
+
+```{r}
+summary(health_2)
+```
+
+### Getting N and P values
+
+```{r}
+h2 <- rcorr(as.matrix(health_2, use = "complete obs"))
+h2
+```
+
+```{r}
+dat1 <- health_2[sapply(health_2,function(x) length(unique(x)))>1]
+cor(dat1, use = "complete.obs")
+```
+
+### Creating a function for the cor matrix
+
+```{r}
+flattenCorrMatrix <- function(cormat, pmat) 
+  {ut <- upper.tri(cormat)
+  data.frame(row = rownames(cormat)[row(cormat)[ut]],
+             column = rownames(cormat)[col(cormat)[ut]],
+             cor  =(cormat)[ut],
+             p = pmat[ut])}
+```
+
+### Correlation matrix
+
+```{r}
+final <- cor(health_2, use = "complete.obs")
+final
+```
+
+### Creating the visualisation
+
+```{r}
+corrplot(final, type = "upper", order = "hclust", 
+         tl.col = "black", tl.srt = 45)
+```
+
+The overall analysis shows that age is very poorly correlated to depressive symptoms intensity (CESD). The mental component score has a strong but negative correlation with CESD. However, the mental component score has a positive but weak correlation with age. Social support has a weak, negative correlation with CESD. Social support also has a weak but positive correlation with age, and mental component score.
+
+# Discussion
+
+Substance or drug abuse is the harmful and often lethal use of psychoactive substances, in this case cocaine, heroin, and alcohol. These substances are becoming more readily available, as it is promoted and distributed throughout the globe. This is a major concern for peoples’ health, as these substances can have negative and everlasting effects in the body (Sahu & Sahu 2012). The results show that the first hypothesis is accepted. This hypothesis demonstrates that alcohol and heroin are not significantly different, and that substance abuse does not influence depressive symptoms. Further showing that both heroin and alcohol have the highest negative effect on depressive symptoms. This finding was not expected, as it is thought that substance abuse would affect the brain and result in irreversible changes in moods.
+
+The second hypothesis is rejected, and it is concluded that a significant difference does exist.  It is evident that gender does have an increasing effect on depressive symptoms. Furthermore, age does influence the intensity of depressive symptoms, but it is a very weak correlation. It is safe to assume that depressive symptoms increase somewhat slightly, as age increases.
+
+The third hypothesis is also accepted as there is no statistical significance, therefore substances do not influence Mental component score. The fourth hypothesis is rejected as the results shows that the mental component score is affected by gender. The results show a positive correlation between social support and mental component score. This shows that as social support increases, so does the patient’s mental component score. On the other hand, age does not appear to influence the mental component score of patients. 
+Lastly, the suicide risk results show that the true location shift is equal to zero. Thus, the suicide risk increases, as the depressive symptoms intensity increases. Also, the results show that social support does not affect suicide risk.
+
+This study’s flaws include a relatively small sample size, it used information of patients that previously reported abuse of at least one of the substances. This information was used despite their possible recovery or any other considerations take in to account such as genetics. The sample size was too small, larger sample size would have increase the statistical significance for some of the tests, as a result of increased validity and accuracy of the study. This study was not able to focus on which substances were more detrimental to the patients’ health. Future research should invest in this aspect of this study. 
+
+# Conclusion
+
+The major findings of this study are that gender affects CESD, while substance abuse does not affect CESD. Substance abuse and age does not affect mental component score. However, gender and social support does influence mental component score. The suicide risk on the other hand, is affected by CESD but not affected by social support. Although substance abuse does not affect the overall mental health of the user/patient, social support helps improve mental state and in turn reduce depressive symptoms (CESD). 
+
+# References
+
+Cornelius JR, Salloum IM, Mezzich J, Cornelius MD. 1995. Disproportionate suicidality in patients with comorbid major depression and alcoholism. *The American journal of psychiatry* 152: 358.
+
+Darke S, Ross J, Lynskey M, Teesson M. 2004. Attempted suicide among entrants to three treatment modalities for heroin dependence in the Australian Treatment Outcome Study (ATOS): prevalence and risk factors. *Drug & Alcohol Dependence* 73: 1–10.
+
+Farivar SS, Cunningham WE, Hays RD. 2007. Correlated physical and mental health summary scores for the SF-36 and SF-12 Health Survey, V. 1. *Health and quality of life outcomes* 5: 54.
+
+Jahoda M. 1958. Joint commission on mental health and illness monograph series: Vol. 1. *Current concepts of positive mental health*. New York: NY.
+
+Kosten TR, Rounsaville BJ. 1988. Suicidality among opioid addicts: 2.5 year follow-up. *The American journal of drug and alcohol abuse* 14: 357–369.
+
+Preuss UW, Schuckit MA, Smith TL, Danko GP, Bucholz KK, Hesselbrock MN, Hesselbrock V, Kramer JR. 2003. Predictors and correlates of suicide attempts over 5 years in 1,237 alcohol-dependent men and women. *American Journal of Psychiatry* 160: 56–63.
+
+Sahu KK, Sahu S. 2012. Substance abuse causes and consequences. *Bangabasi Academic Journal* 9: 52–59.
+
+Strupp HH, Hadley SW. 1977. A tripartite model of mental health and therapeutic outcomes: With special reference to negative effects in psychotherapy. *American Psychologist* 32: 187.
+
+Wines JD, Saitz R, Horton NJ, Lloyd-Travaglini C, Samet JH. 2004. Suicidal behavior, drug use and depressive symptoms after detoxification: a 2-year prospective study. *Drug & Alcohol Dependence* 76: S21–S29.
