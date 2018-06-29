@@ -9,6 +9,8 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# An investigation into the variables that impact mental health
+
 # Abstract
 
 Mental health is an important topic of discussion in today’s society with positive mental health being associated with the ability to remain independent of social influences. It is, therefore, important to examine the effects of social influences on mental health in order to better understand the condition of the human mind. This study examines the effects of substance abuse, social support, age and gender on the CESD (Center for Epidemiologic Studies Depression measure at baseline) and MCS (SF-36 Mental Component Score) of a group of adult inpatients recruited from a detoxification unit. A series of statistical analyses were applied and it was found that gender and not substance abuse affects CESD (Center for Epidemiologic Studies Depression measure at baseline). Gender in addition to social support was found to influence Mental Component Score with age having no effect on Mental Component Score. In agreement with other studies, this study has also shown that depressive symptoms further increases the risk of suicidal behaviour with suicide risk being affected by CESD (Center for Epidemiologic Studies Depression measure at baseline) and not by social support. 
@@ -103,6 +105,8 @@ sub_depression_graph <- ggplot(depression_data, aes(x = Substance, y = mn_cesd,
                     ymax = mn_cesd + sd_cesd),
                 position = "dodge",width = 0.5)
 sub_depression_graph
+
+ggsave(sub_depression_graph, filename = "Figure_1.png")
 ```
 
 The higher the intensity of depressive symptoms the higher the effect of the substance. In Figure 1, cocaine appears to be the substance that is least likely to cause depression. Alcohol and heroin are most likely to cause depression. However, the error bars show that the difference between heroin and alcohol is not statistically significant. Indicating that the abuse of these substances does not influence the intensity of depressive symptoms. The kurtosis of all three substances is less than zero, meaning that the distributions are of a platykurtic distribution. 
@@ -128,12 +132,15 @@ summary(CESD.aov)
 ### Creating the graphical representation
 
 ```{r}
-ggplot(data = CESD.aov, aes(x = Substance, y = CESD)) +
+F2 <- ggplot(data = CESD.aov, aes(x = Substance, y = CESD)) +
   geom_boxplot(aes(fill = Substance), notch = TRUE) +
   labs(title = "The effect of each substance on the intensity of depressive symptoms", 
        caption = "Figure 2: An ANOVA analysis of the depressive symptoms based on the three substances that were abused") +
   theme(plot.title = element_text(hjust = 0.5), 
         plot.caption = element_text(hjust = 0.5))
+F2
+
+ggsave(F2, filename = "Figure_2.png")
 ```
 
 Figure 2 shows that the notches of the substances alcohol and heroin overlap, indicating that their medians do not differ, with 95% confidence intervals. The notch for cocaine overlaps with neither alcohol nor heroin, indicating that the medians differ with 95% confidence intervals.
@@ -225,6 +232,8 @@ mental_score_graph <- ggplot(mental_data, aes(x = Substance, y = mn_mental,
                     ymax = mn_mental + sd_mental),
                 position = "dodge",width = 0.5)
 mental_score_graph
+
+ggsave(mental_score_graph, filename = "Figure_3.png")
 ```
 
 A high mental component score indicated a healthy mental state. In Figure 3, heroin has the greatest negative effect on the mental component score, resulting in a poor mental state. This is followed by the substances alcohol and cocaine, respectively. The error bars show that the difference between heroin, cocaine and alcohol is not statistically significant.
@@ -261,6 +270,8 @@ gender_graph <- ggplot(gender_data, aes(x = Sex, y = mn_mental,
                     ymax = mn_mental + sd_mental),
                 position = "dodge",width = 0.5)
 gender_graph
+
+ggsave(gender_graph, filename = "Figure_4.png")
 ```
 
 Figure 4 shows that males have a higher mental component score than females, however the error bars show that there is no significant difference. 
@@ -329,6 +340,8 @@ correlation <- ggplot(data = age_data, aes(x = Age , y = mn_mental)) +
   theme(plot.title = element_text(hjust = 0.5), 
         plot.caption = element_text(hjust = 0.5))
 correlation
+
+ggsave(correlation, filename = "Figure_5.png")
 ```
 
 Figure 5 shows that there is no significant correlation between age and mental component score.
