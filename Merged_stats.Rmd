@@ -1,6 +1,6 @@
 ---
-title: "Untitled"
-author: "Kylen Brown (3540337), Akira Govender (3540386) & Shanudre Hofstander (3540248)"
+title: "An investigation into the variables that impact mental health"
+author: "Kylen Brown (3540337), Akira Govender (3540386) & Shaundre Hofstander (3540248)"
 date: "28 June 2018"
 output: pdf_document
 ---
@@ -9,12 +9,9 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
----
-title: "An investigation into the variables that impact mental health"
-author: "Kylen Brown (3540337), Akira Govender (3540386) & Shaundre Hofstander (3540248)"
-date: "15 June 2018"
-output: pdf_document
----
+# Abstract
+
+Mental health is an important topic of discussion in today’s society with positive mental health being associated with the ability to remain independent of social influences. It is, therefore, important to examine the effects of social influences on mental health in order to better understand the condition of the human mind. This study examines the effects of substance abuse, social support, age and gender on the CESD (Center for Epidemiologic Studies Depression measure at baseline) and MCS (SF-36 Mental Component Score) of a group of adult inpatients recruited from a detoxification unit. A series of statistical analyses were applied and it was found that gender and not substance abuse affects CESD (Center for Epidemiologic Studies Depression measure at baseline). Gender in addition to social support was found to influence Mental Component Score with age having no effect on Mental Component Score. In agreement with other studies, this study has also shown that depressive symptoms further increases the risk of suicidal behaviour with suicide risk being affected by CESD (Center for Epidemiologic Studies Depression measure at baseline) and not by social support. 
 
 # Introduction 
 
