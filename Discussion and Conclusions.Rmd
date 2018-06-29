@@ -1,0 +1,25 @@
+---
+title: "An investigation into the variables that impact mental health"
+author: "Kylen Brown (3540337), Akira Govender (3540386) & Shaundre Hofstander (3540248)"
+date: "29 June 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Discussion
+
+Substance or drug abuse is the harmful and often lethal use of psychoactive substances, in this case cocaine, heroin, and alcohol. These substances are becoming more readily available, as it is promoted and distributed throughout the globe. This is a major concern for peoples’ health, as these substances can have negative and everlasting effects in the body (Sahu & Sahu 2012). The results show that the first hypothesis is accepted. This hypothesis demonstrates that alcohol and heroin are not significantly different, and that substance abuse does not influence depressive symptoms. Further showing that both heroin and alcohol have the highest negative effect on depressive symptoms. This finding was not expected, as it is thought that substance abuse would affect the brain and result in irreversible changes in moods.
+
+The second hypothesis is rejected, and it is concluded that a significant difference does exist.  It is evident that gender does have an increasing effect on depressive symptoms. Furthermore, age does influence the intensity of depressive symptoms, but it is a very weak correlation. It is safe to assume that depressive symptoms increase somewhat slightly, as age increases.
+
+The third hypothesis is also accepted as there is no statistical significance, therefore substances do not influence Mental component score. The fourth hypothesis is rejected as the results shows that the mental component score is affected by gender. The results show a positive correlation between social support and mental component score. This shows that as social support increases, so does the patient’s mental component score. On the other hand, age does not appear to influence the mental component score of patients. 
+Lastly, the suicide risk results show that the true location shift is equal to zero. Thus, the suicide risk increases, as the depressive symptoms intensity increases. Also, the results show that social support does not affect suicide risk.
+
+This study’s flaws include a relatively small sample size, it used information of patients that previously reported abuse of at least one of the substances. This information was used despite their possible recovery or any other considerations take in to account such as genetics. The sample size was too small, larger sample size would have increase the statistical significance for some of the tests, as a result of increased validity and accuracy of the study. This study was not able to focus on which substances were more detrimental to the patients’ health. Future research should invest in this aspect of this study. 
+
+# Conclusion 
+
+The major findings of this study are that gender affects CESD, while substance abuse does not affect CESD. Substance abuse and age does not affect mental component score. However, gender and social support does influence mental component score. The suicide risk on the other hand, is affected by CESD but not affected by social support. Although substance abuse does not affect the overall mental health of the user/patient, social support helps improve mental state and in turn reduce depressive symptoms (CESD). 
