@@ -2,11 +2,12 @@
 title: "An investigation into the variables that impact mental health"
 author: "Kylen Brown (3540337), Akira Govender (3540386) & Shaundre Hofstander (3540248)"
 date: "29 June 2018"
-output: 
+output:
+  word_document: default
   pdf_document:
     latex_engine: pdflatex
 mainfont: Arial
-fontsize: 11pt 
+fontsize: 11pt
 ---
 
 # Abstract
